@@ -119,6 +119,10 @@ button {
   font-size: var(--font-size-medium);
 }
 
+.btn__reset:hover {
+  cursor: pointer;
+}
+
 /* Overlay */
 
 #overlay {
