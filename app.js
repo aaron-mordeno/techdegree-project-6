@@ -1,7 +1,10 @@
 const phraseDiv = document.getElementById('phrase');
 const qwerty = document.getElementById('qwerty');
 const startButton = document.querySelector('a.btn__reset');
-let ul = document.querySelector('div#phrase ul');
+const ul = document.querySelector('div#phrase ul');
+const scoreboard = document.querySelector('scoreboard');
+
+
 let missed = 0;
 const phrasesArray = [
     'coding',
@@ -47,13 +50,26 @@ const addPhraseToDisplay = arr => {
 // check if a letter is in the phrase
 const checkLetter = button => {
     let letters = document.querySelectorAll('li.letter');
-    console.log(letters);
     let match = null;
     for (let i = 0; i < letters.length; i++) {
         if (button.textContent === letters[i].textContent) {
-            console.log('correct')
-        } else {
-            console.log('wrong')
+            letters[i].classList.add('show');
+            match = letters[i].textContent;
         }
     }
+    return match;
 };
+
+// listen for on-screen keyboard clicks
+qwerty.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+        let button = e.target;
+        button.classList.add('chosen');
+        button.disabled = true;
+        let checkLetterResult = checkLetter(button);
+        if (checkLetterResult === null) {
+            scoreboard.removeChild(scoreboard.firstChild);
+
+        }
+    }
+});
