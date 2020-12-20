@@ -165,3 +165,9 @@ button {
 .lose a {
   color: var(--color-lose);
 }
+
+/* Scoreboard */
+#scoreboard ol li img {
+  height: 35px;
+  width: 30px;
+}

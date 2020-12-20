@@ -1,24 +1,21 @@
+const overlay = document.getElementById('overlay');
+const startButton = document.querySelector('a.btn__reset');
+const title = document.querySelector('.title');
+
 const phraseDiv = document.getElementById('phrase');
 const qwerty = document.getElementById('qwerty');
-const startButton = document.querySelector('a.btn__reset');
 const ul = document.querySelector('div#phrase ul');
-const scoreboard = document.querySelector('scoreboard');
 
-
+const scoreboard = document.querySelector('div#scoreboard ol');
 let missed = 0;
-const phrasesArray = [
-    'coding',
-    'weed',
-    'skate',
-    'djent',
-    'pain'
-];
 
-// event listener for Start Game button
-startButton.addEventListener('click', (e) => {
-    let overlay = document.getElementById('overlay');
-    overlay.style.display = 'none';
-});
+const phrasesArray = [
+    'coding is fun',
+    'smoke weed',
+    'skate or die',
+    'does it djent',
+    'life is pain'
+];
 
 // return a random phrase from the phrases array
 const getRandomPhraseAsArray = arr => {
@@ -37,7 +34,7 @@ const addPhraseToDisplay = arr => {
     for (let i = 0; i < gamePhrase.length; i++) {
         let li = document.createElement('li');
         li.innerText = gamePhrase[i];
-        if (li.textContent === '') {
+        if (li.textContent === ' ') {
             li.className = 'space';
         } else {
             li.className = 'letter';
@@ -68,8 +65,41 @@ qwerty.addEventListener('click', (e) => {
         button.disabled = true;
         let checkLetterResult = checkLetter(button);
         if (checkLetterResult === null) {
-            scoreboard.removeChild(scoreboard.firstChild);
+            scoreboard.removeChild(scoreboard.firstElementChild);
 
+            let lostLife = document.createElement('li');
+            lostLife.classList.add('tries');
+            let lostLifeImg = document.createElement('img');
+            lostLifeImg.src = "images/lostHeart.png";
+
+            lostLife.appendChild(lostLifeImg);
+            scoreboard.appendChild(lostLife);
+
+            missed += 1;
         }
+        checkWin();
+        console.log(`Letter: ${checkLetterResult} Missed: ${missed}`);
     }
+    
+});
+
+// check if game is won or lost after each button press
+const checkWin = () => {
+    let lettersinPhrase = document.querySelectorAll('.letter');
+    let shownLetters = document.querySelectorAll('.letter.show');
+    if (shownLetters.length === lettersinPhrase.length) {
+        overlay.classList.add('win');
+        title.textContent = 'You Win!';
+        overlay.style.display = 'flex';
+    } else if (missed === 5) {
+        overlay.classList.add('lose');
+        title.textContent = 'You Lose!';
+        overlay.style.display = 'flex';
+    }
+}
+
+// event listener for Start Game button
+startButton.addEventListener('click', (e) => {
+    overlay.style.display = 'none';
+    addPhraseToDisplay();
 });
