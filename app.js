@@ -8,10 +8,10 @@ const ul = document.querySelector('div#phrase ul');
 
 const scoreboard = document.querySelector('div#scoreboard ol');
 let missed = 0;
-
+let gamePhrase = '';
 const phrasesArray = [
     'coding is fun',
-    'smoke weed',
+    'checkmate',
     'skate or die',
     'does it djent',
     'life is pain'
@@ -23,11 +23,13 @@ const getRandomPhraseAsArray = arr => {
     return phrasesArray[random];
 };
 
-let gamePhrase = '';
-    gamePhrase = getRandomPhraseAsArray(phrasesArray);
+
 
 // add phrase to display
 const addPhraseToDisplay = arr => {
+    // generate random phrase
+    gamePhrase = getRandomPhraseAsArray(phrasesArray);
+
     let letters = [];
     
     // assigning each letter to a <li>
@@ -78,7 +80,6 @@ qwerty.addEventListener('click', (e) => {
             missed += 1;
         }
         checkWin();
-        console.log(`Letter: ${checkLetterResult} Missed: ${missed}`);
     }
     
 });
@@ -91,15 +92,56 @@ const checkWin = () => {
         overlay.classList.add('win');
         title.textContent = 'You Win!';
         overlay.style.display = 'flex';
+        startButton.textContent = 'New Game';
     } else if (missed === 5) {
         overlay.classList.add('lose');
         title.textContent = 'You Lose!';
         overlay.style.display = 'flex';
+        startButton.textContent = 'New Game';
     }
 }
 
 // event listener for Start Game button
 startButton.addEventListener('click', (e) => {
-    overlay.style.display = 'none';
+    // remove phrase from screen
+    while (ul.firstElementChild) {
+        ul.removeChild(ul.firstElementChild);
+    }
+
+    // remove 'chosen' class 
+    let keys = document.querySelectorAll('#qwerty button');
+    
+    for (let i = 0; i < keys.length; i++) {
+        keys[i].classList.remove('chosen');
+        keys[i].disabled = false;
+    }
+
+    // reset missed count to 0
+    missed = 0;
+
+    // remove all life icons (in case there are any lost life)
+    while (scoreboard.firstElementChild) {
+        scoreboard.removeChild(scoreboard.firstElementChild);
+    }
+
+    // add a full scoreboard with life
+    for (let i = 0; i < 5; i++) {
+            let life = document.createElement('li');
+            life.classList.add('tries');
+            let lifeImg = document.createElement('img');
+            lifeImg.src = "images/liveHeart.png";
+
+            life.appendChild(lifeImg);
+            scoreboard.appendChild(life);
+    }
+
+    // add new phrase to the display
     addPhraseToDisplay();
+    
+    // remove overlay from screen
+    overlay.style.display = 'none';
+
+    // remove 'win' or 'lose' class from overlay
+    overlay.classList.remove('win');
+    overlay.classList.remove('lose');
 });
